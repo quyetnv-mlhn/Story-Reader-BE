@@ -1,8 +1,10 @@
 package com.example.story_reading_app.controller;
 
+import com.example.story_reading_app.dto.PaginatedResponse;
+import com.example.story_reading_app.dto.PaginationRequest;
+import com.example.story_reading_app.dto.SearchRequest;
 import com.example.story_reading_app.dto.StoryDTO;
 import com.example.story_reading_app.service.StoryService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,8 +20,11 @@ public class StoryController {
     }
 
     @GetMapping
-    public List<StoryDTO> getAllStories() {
-        return storyService.getAllStories();
+    public PaginatedResponse<StoryDTO> getAllStories(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        PaginationRequest paginationRequest = new PaginationRequest(page, size);
+        return storyService.getAllStories(paginationRequest);
     }
 
     @GetMapping("/{id}")
@@ -40,5 +45,10 @@ public class StoryController {
     @DeleteMapping("/{id}")
     public void deleteStory(@PathVariable Long id) {
         storyService.deleteStory(id);
+    }
+
+    @GetMapping("/search")
+    public List<StoryDTO> searchStories(SearchRequest criteria) {
+        return storyService.searchStories(criteria.getTitle(), criteria.getAuthor());
     }
 }

@@ -1,9 +1,14 @@
 package com.example.story_reading_app.service;
 
+import com.example.story_reading_app.dto.PaginatedResponse;
+import com.example.story_reading_app.dto.PaginationRequest;
 import com.example.story_reading_app.dto.StoryDTO;
 import com.example.story_reading_app.entity.Status;
 import com.example.story_reading_app.entity.StoryEntity;
 import com.example.story_reading_app.repository.StoryRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,8 +24,18 @@ public class StoryServiceImpl implements StoryService {
     }
 
     @Override
-    public List<StoryDTO> getAllStories() {
-        return storyRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
+    public PaginatedResponse<StoryDTO> getAllStories(PaginationRequest paginationRequest) {
+        Pageable pageable = PageRequest.of(paginationRequest.getPage() - 1, paginationRequest.getSize());
+        Page<StoryEntity> storyPage = storyRepository.findAll(pageable);
+
+        return new PaginatedResponse<>(
+                storyPage.getContent().stream().map(this::convertToDTO).collect(Collectors.toList()),
+                paginationRequest.getPage(),
+                paginationRequest.getSize(),
+                storyPage.getTotalElements(),
+                storyPage.getTotalPages(),
+                storyPage.hasNext()
+        );
     }
 
     @Override
@@ -52,6 +67,21 @@ public class StoryServiceImpl implements StoryService {
     @Override
     public void deleteStory(Long id) {
         storyRepository.deleteById(id);
+    }
+
+    @Override
+    public List<StoryDTO> searchStories(String title, String author) {
+        List<StoryEntity> stories;
+        if (title != null && author != null) {
+            stories = storyRepository.findByTitleContainingAndAuthorContaining(title, author);
+        } else if (title != null) {
+            stories = storyRepository.findByTitleContaining(title);
+        } else if (author != null) {
+            stories = storyRepository.findByAuthorContaining(author);
+        } else {
+            stories = storyRepository.findAll();
+        }
+        return stories.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     private StoryDTO convertToDTO(StoryEntity story) {
