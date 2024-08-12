@@ -1,4 +1,4 @@
-package com.example.story_reading_app.dto;
+package com.example.story_reading_app.dto.request;
 
 public class SearchRequest {
     private String title;

@@ -26,6 +26,9 @@ public class StoryEntity {
     private Set<PageEntity> pages;
     private LocalDateTime lastUpdate;
 
+    private boolean isFeatured;
+    private int featuredOrder;   // Optional: controls the order of featured stories
+
     @PreUpdate
     protected void onUpdate() {
         lastUpdate = LocalDateTime.now();
@@ -101,5 +104,21 @@ public class StoryEntity {
 
     public void setLastUpdate(LocalDateTime lastUpdate) {
         this.lastUpdate = lastUpdate;
+    }
+
+    public boolean isFeatured() {
+        return isFeatured;
+    }
+
+    public void setFeatured(boolean featured) {
+        isFeatured = featured;
+    }
+
+    public int getFeaturedOrder() {
+        return featuredOrder;
+    }
+
+    public void setFeaturedOrder(int featuredOrder) {
+        this.featuredOrder = featuredOrder;
     }
 }

@@ -1,9 +1,10 @@
 package com.example.story_reading_app.controller;
 
-import com.example.story_reading_app.dto.PaginatedResponse;
-import com.example.story_reading_app.dto.PaginationRequest;
-import com.example.story_reading_app.dto.SearchRequest;
-import com.example.story_reading_app.dto.StoryDTO;
+import com.example.story_reading_app.dto.response.ApiResponse;
+import com.example.story_reading_app.dto.response.PaginatedResponse;
+import com.example.story_reading_app.dto.request.PaginationRequest;
+import com.example.story_reading_app.dto.request.SearchRequest;
+import com.example.story_reading_app.dto.response.StoryResponse;
 import com.example.story_reading_app.service.StoryService;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +13,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/stories")
 public class StoryController {
-
     private final StoryService storyService;
 
     public StoryController(StoryService storyService) {
@@ -20,35 +20,53 @@ public class StoryController {
     }
 
     @GetMapping
-    public PaginatedResponse<StoryDTO> getAllStories(
+    public ApiResponse<PaginatedResponse<StoryResponse>> getAllStories(
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        PaginationRequest paginationRequest = new PaginationRequest(page, size);
-        return storyService.getAllStories(paginationRequest);
+            @RequestParam(defaultValue = "10") int pageSize) {
+        PaginationRequest paginationRequest = new PaginationRequest(page, pageSize);
+        PaginatedResponse<StoryResponse> stories = storyService.getAllStories(paginationRequest);
+        return ApiResponse.success(stories);
     }
 
     @GetMapping("/{id}")
-    public StoryDTO getStoryById(@PathVariable Long id) {
-        return storyService.getStoryById(id);
+    public ApiResponse<StoryResponse> getStoryById(@PathVariable Long id) {
+        StoryResponse story = storyService.getStoryById(id);
+        return ApiResponse.success(story);
     }
 
     @PostMapping
-    public StoryDTO createStory(@RequestBody StoryDTO storyDTO) {
-        return storyService.createStory(storyDTO);
+    public ApiResponse<StoryResponse> createStory(@RequestBody StoryResponse StoryResponse) {
+        StoryResponse createdStory = storyService.createStory(StoryResponse);
+        return ApiResponse.success(createdStory);
     }
 
     @PutMapping("/{id}")
-    public StoryDTO updateStory(@PathVariable Long id, @RequestBody StoryDTO storyDTO) {
-        return storyService.updateStory(id, storyDTO);
+    public ApiResponse<StoryResponse> updateStory(@PathVariable Long id, @RequestBody StoryResponse StoryResponse) {
+        StoryResponse updatedStory = storyService.updateStory(id, StoryResponse);
+        return ApiResponse.success(updatedStory);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteStory(@PathVariable Long id) {
+    public ApiResponse<Void> deleteStory(@PathVariable Long id) {
         storyService.deleteStory(id);
+        return ApiResponse.success(null);
     }
 
     @GetMapping("/search")
-    public List<StoryDTO> searchStories(SearchRequest criteria) {
-        return storyService.searchStories(criteria.getTitle(), criteria.getAuthor());
+    public ApiResponse<List<StoryResponse>> searchStories(SearchRequest criteria) {
+        List<StoryResponse> stories = storyService.searchStories(criteria.getTitle(), criteria.getAuthor());
+        return ApiResponse.success(stories);
+    }
+
+    @GetMapping("/featured")
+    public ApiResponse<List<StoryResponse>> getFeaturedStories() {
+        List<StoryResponse> featuredStories = storyService.getFeaturedStories();
+        return ApiResponse.success(featuredStories);
+    }
+
+    @GetMapping("/recently-updated")
+    public ApiResponse<List<StoryResponse>> getRecentlyUpdatedStories() {
+        List<StoryResponse> recentlyUpdatedStories = storyService.getRecentlyUpdatedStories();
+        return ApiResponse.success(recentlyUpdatedStories);
     }
 }

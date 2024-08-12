@@ -12,4 +12,8 @@ public interface StoryRepository extends JpaRepository<StoryEntity, Long> {
     List<StoryEntity> findByTitleContaining(String title);
 
     List<StoryEntity> findByAuthorContaining(String author);
+
+    List<StoryEntity> findTop5ByIsFeaturedTrueOrderByFeaturedOrderAsc();
+
+    List<StoryEntity> findTop10ByOrderByLastUpdateDesc();
 }

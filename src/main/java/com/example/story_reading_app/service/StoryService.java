@@ -1,22 +1,25 @@
 package com.example.story_reading_app.service;
 
-import com.example.story_reading_app.dto.PaginatedResponse;
-import com.example.story_reading_app.dto.PaginationRequest;
-import com.example.story_reading_app.dto.StoryDTO;
-import org.springframework.data.domain.Page;
+import com.example.story_reading_app.dto.response.PaginatedResponse;
+import com.example.story_reading_app.dto.request.PaginationRequest;
+import com.example.story_reading_app.dto.response.StoryResponse;
 
 import java.util.List;
 
 public interface StoryService {
-    PaginatedResponse<StoryDTO> getAllStories(PaginationRequest paginationRequest);
+    PaginatedResponse<StoryResponse> getAllStories(PaginationRequest paginationRequest);
 
-    StoryDTO getStoryById(Long id);
+    StoryResponse getStoryById(Long id);
 
-    StoryDTO createStory(StoryDTO storyDTO);
+    StoryResponse createStory(StoryResponse storyResponse);
 
-    StoryDTO updateStory(Long id, StoryDTO storyDTO);
+    StoryResponse updateStory(Long id, StoryResponse storyResponse);
 
     void deleteStory(Long id);
 
-    List<StoryDTO> searchStories(String title, String author);
+    List<StoryResponse> searchStories(String title, String author);
+
+    List<StoryResponse> getFeaturedStories();
+
+    List<StoryResponse> getRecentlyUpdatedStories();
 }

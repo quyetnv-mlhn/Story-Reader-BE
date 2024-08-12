@@ -1,4 +1,4 @@
-package com.example.story_reading_app.dto;
+package com.example.story_reading_app.dto.response;
 
 import java.util.List;
 

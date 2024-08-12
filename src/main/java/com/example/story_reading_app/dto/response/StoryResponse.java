@@ -1,6 +1,6 @@
-package com.example.story_reading_app.dto;
+package com.example.story_reading_app.dto.response;
 
-public class StoryDTO {
+public class StoryResponse {
 
     private Long id;
     private String title;
